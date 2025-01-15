@@ -1,15 +1,23 @@
-provider
+# provider
+# model
+# prompt
+# answer
+# response_timestamp
+# response_time_ms
+# token_usage
+# raw_response
 
-model
 
-prompt
+from dataclasses import dataclass ,  field
+from typing import Any
 
-answer
-
-response_timestamp
-
-response_time_ms
-
-token_usage
-
-raw_response
+@dataclass
+class provider_Response:
+    provider: str
+    model:str
+    prompt:str
+    answer:str
+    response_timestamp:int
+    response_time_ms:int
+    token_usage:dict[str,int]
+    raw_response:dict[str,int]=field(default_Factory= dict)

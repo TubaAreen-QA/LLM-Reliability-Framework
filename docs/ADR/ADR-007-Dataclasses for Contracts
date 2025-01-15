@@ -1,0 +1,30 @@
+
+ADR-007
+
+Title
+
+Use Dataclasses for Contracts
+
+Context
+
+The framework exchanges structured data between providers, validators, scorers and reporters.
+
+Decision
+
+Use immutable-style dataclasses to represent request and response contracts.
+
+Consequences
+
+Pros
+
+✓ Better IDE support
+
+✓ Type hints
+
+✓ Easier testing
+
+✓ Explicit contracts
+
+Cons
+
+• Slightly more boilerplate than dictionaries.

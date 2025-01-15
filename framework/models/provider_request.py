@@ -1,47 +1,39 @@
-ProviderRequest
+# ProviderRequest
+# Identification
+# ---------------------
+# provider
+# model
+# request_id
+# Generation
+# ---------------------
+# prompt
+# system_prompt
+# temperature
+# max_tokens
+# top_p
+# stop_sequences
+# response_format
+# Execution
+# ---------------------
+# timeout
+# retry_count
+# stream
+# Framework
+# ---------------------
+# metadata
+# tags
 
-Identification
 
----------------------
 
-provider
+from dataclasses import dataclass, field
+from typing import Any
 
-model
-
-request_id
-
-Generation
-
----------------------
-
-prompt
-
-system_prompt
-
-temperature
-
-max_tokens
-
-top_p
-
-stop_sequences
-
-response_format
-
-Execution
-
----------------------
-
-timeout
-
-retry_count
-
-stream
-
-Framework
-
----------------------
-
-metadata
-
-tags
+@dataclass
+class provider_request:
+    prompt: str
+    provider: str
+    model: str 
+    temprature: float = 0.0
+    max_tokens: int = 512
+    timeout: int = 30
+    metadata:dict[str,Any] = field(default_factory=dict)
