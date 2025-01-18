@@ -1,20 +1,30 @@
-from framework.models.provider_request import provider_request
-from framework.models.provider_response import provider_Response
+from framework.models.provider_request import ProviderRequest
+from framework.models.provider_response import ProviderResponse
 
-class Fakeprovider:
-        def ask(self, request:provider_request):
-                if request.prompt =="What is the capital of france?":
-                    answer = "paris"
-                else:
-                    answer = "I dont know"
-                return provider_Response(
-                    provider="fake"
-                    model = "fakegpt"
-                    prompt="request.prompt"
-                    answer=answer
-                    response_time_ms= 120
-                    token_usage={
-                          "input":8,
-                          "output":1
-                    }
-                    )
+
+class FakeProvider:
+
+    RESPONSES = {
+        "What is the capital of France?": "Paris",
+        "What is 2 + 2?": "4",
+        "Who wrote Hamlet?": "William Shakespeare",
+        "What color is the sky?": "Blue"
+    }
+
+    def ask(self, request: ProviderRequest) -> ProviderResponse:
+
+        answer = self.RESPONSES.get(request.prompt, "Unknown")
+
+        return ProviderResponse(
+            provider=request.provider,
+            model=request.model,
+            prompt=request.prompt,
+            answer=answer,
+            response_time_ms=120,
+            token_usage={
+                "input": 10,
+                "output": 5,
+                "total": 15
+            },
+            raw_response={}
+        )

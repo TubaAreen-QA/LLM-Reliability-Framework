@@ -1,11 +1,17 @@
-validator
+# validator
+# status
+# actual
+# expected
+# message
+# score
 
-status
+from dataclasses import dataclass
+@dataclass(slots=True)
 
-actual
-
-expected
-
-message
-
-score
+class validation_Result:
+    validator:str
+    status:str
+    actual:float|str
+    expected:float|str
+    message:str
+    score:float

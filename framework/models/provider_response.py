@@ -11,7 +11,7 @@
 from dataclasses import dataclass ,  field
 from typing import Any
 
-@dataclass
+@dataclass(slots=True)
 class provider_Response:
     provider: str
     model:str
@@ -21,3 +21,4 @@ class provider_Response:
     response_time_ms:int
     token_usage:dict[str,int]
     raw_response:dict[str,int]=field(default_Factory= dict)
+    provider_confidence: float | None = None

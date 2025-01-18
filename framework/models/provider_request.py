@@ -28,7 +28,7 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-@dataclass
+@dataclass(slots=True)
 class provider_request:
     prompt: str
     provider: str
