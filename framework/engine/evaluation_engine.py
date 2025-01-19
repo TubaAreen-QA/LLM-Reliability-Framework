@@ -1,20 +1,43 @@
+from framework.engine.validation_engine import ValidationEngine
+from framework.engine.scoring_engine import ScoringEngine
+
+from framework.models.evaluation_result import EvaluationResult
+
+
 class EvaluationEngine:
+
+    def __init__(self, provider):
+
+        self.provider = provider
+
+        self.validation_engine = ValidationEngine()
+
+        self.scoring_engine = ScoringEngine()
 
     def evaluate(self, request, expected):
 
-        response = provider.ask(request)
+        response = self.provider.ask(request)
 
-        validations = validation_engine.validate(
+        validations = self.validation_engine.validate(
+
             response,
+
             expected
+
         )
 
-        score = scoring_engine.calculate(
+        score = self.scoring_engine.calculate(
+
             validations
+
         )
 
         return EvaluationResult(
+
             provider_response=response,
+
             validation_results=validations,
+
             overall_score=score
+
         )

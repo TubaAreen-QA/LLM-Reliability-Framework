@@ -1,12 +1,26 @@
-def validate(response, expected):
+from validators.substring_validator import SubstringValidator
 
-    results = []
 
-    result = substring_validator(
-        response.answer,
-        expected
-    )
+class ValidationEngine:
 
-    results.append(result)
+    def __init__(self):
 
-    return results
+        self.substring = SubstringValidator()
+
+    def validate(self, response, expected):
+
+        results = []
+
+        results.append(
+
+            self.substring.validate(
+
+                response.answer,
+
+                expected
+
+            )
+
+        )
+
+        return results
