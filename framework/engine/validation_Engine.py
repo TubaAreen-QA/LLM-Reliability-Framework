@@ -1,4 +1,4 @@
-from validators.substring_validator import SubstringValidaton
+from validators.Substring_Validator import SubstringValidator
 
 
 class ValidationEngine:
