@@ -1,9 +1,10 @@
+from validators.base_validator import BaseValidator
+
 from framework.models.validation_result import ValidationResult
 
+class SubstringValidator(BaseValidator):
 
-class SubstringValidator:
-
-    def validate(self, actual: str, expected: str) -> ValidationResult:
+    def validate(self, actual, expected):
 
         if expected.lower() in actual.lower():
 
@@ -13,7 +14,7 @@ class SubstringValidator:
                 score=100,
                 actual=actual,
                 expected=expected,
-                message="Expected text found in response."
+                message="Substring matched."
             )
 
         return ValidationResult(
@@ -22,5 +23,5 @@ class SubstringValidator:
             score=0,
             actual=actual,
             expected=expected,
-            message="Expected text not found in response."
+            message="Substring not found."
         )
