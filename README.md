@@ -1,17 +1,64 @@
-# LLM-Reliability-Framework
-LLM Reliability Framework
 # EvalForge
 
-A modular LLM Evaluation Framework built using Robot Framework and Python.
+A modular LLM Evaluation Framework built using Python and Robot Framework.
+
+---
 
 ## Vision
 
-Provide a provider-agnostic framework to evaluate and compare Large Language Models using configurable validators, scoring engines and reporting modules.
+Build a provider-agnostic framework capable of evaluating Large Language Models using configurable validators, weighted scoring, benchmarking and reporting.
+
+---
+
+## Current Status
+
+🚧 Under Development
+
+---
+
+## Features
+
+- Provider Abstraction
+- Validation Engine
+- Weighted Scoring
+- Robot Framework Integration
+- Model Comparison
+- Benchmark Execution
+- JSON Reporting
+- HTML Reporting
+
+---
 
 ## Architecture
 
-Robot Framework → Evaluation Engine → Providers → Validators → Scoring → Reporting
+Robot Framework
+        │
+        ▼
+Evaluation Library
+        │
+        ▼
+Evaluation Engine
+        │
+ ┌──────┼──────────┐
+ ▼      ▼          ▼
+Provider Validation Scoring
+        │
+        ▼
+Reporter
 
-## Status
+---
 
-🚧 Under Active Development
+## Repository Structure
+
+framework/
+providers/
+validators/
+reporters/
+robot/
+tests/
+
+---
+
+## License
+
+MIT

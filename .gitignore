@@ -1,18 +1,46 @@
+# Python
+
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 
-.venv/
+# Virtual Environment
+
 venv/
+.venv/
+env/
 
-.idea/
+# IDE
+
 .vscode/
+.idea/
 
-output.xml
-report.html
+# Robot Framework
+
 log.html
+report.html
+output.xml
 
-*.log
+# Pytest
+
+.pytest_cache/
+
+# Coverage
+
+.coverage
+htmlcov/
+
+# Build
+
+build/
+dist/
+*.egg-info/
+
+# OS
+
+.DS_Store
+Thumbs.db
+
+# Environment
 
 .env
