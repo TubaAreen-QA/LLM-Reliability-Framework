@@ -20,3 +20,19 @@ def test_fake_provider_returns_paris():
     assert response.provider == "fake"
 
     assert response.model == "fake-gpt"
+
+    assert response.provider_confidence == 0.99
+
+def test_unknown_prompt():
+
+    request = ProviderRequest(
+        provider="fake",
+        model="fake-gpt",
+        prompt="Unknown Prompt"
+    )
+
+    response = provider.ask(request)
+
+    assert response.answer == "Unknown"
+
+    assert response.provider_confidence == 0.0

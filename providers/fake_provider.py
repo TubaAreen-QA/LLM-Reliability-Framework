@@ -1,30 +1,64 @@
-from framework.models.provider_request import ProviderRequest
-from framework.models.provider_response import ProviderResponse
+import json
+import time
+from pathlib import Path
+
+from providers.base_provider import BaseProvider
+
+from framework.models.provider_request import provider_request
+from framework.models.provider_response import provider_Response
 
 
-class FakeProvider:
+class FakeProvider(BaseProvider):
 
-    RESPONSES = {
-        "What is the capital of France?": "Paris",
-        "What is 2 + 2?": "4",
-        "Who wrote Hamlet?": "William Shakespeare",
-        "What color is the sky?": "Blue"
-    }
+    def __init__(self):
 
-    def ask(self, request: ProviderRequest) -> ProviderResponse:
+        file = (
+            Path(__file__).parent.parent
+            / "data"
+            / "fake_provider_responses.json"
+        )
 
-        answer = self.RESPONSES.get(request.prompt, "Unknown")
+        with open(file, encoding="utf-8") as f:
+            self.responses = json.load(f)
 
-        return ProviderResponse(
+    def ask(
+        self,
+        request: provider_request
+    ) -> provider_Response:
+
+        start = time.perf_counter()
+
+        data = self.responses.get(
+            request.prompt,
+            {
+                "answer": "Unknown",
+                "provider_confidence": 0.0
+            }
+        )
+
+        elapsed = (
+            time.perf_counter() - start
+        ) * 1000
+
+        answer = data["answer"]
+
+        confidence = data["provider_confidence"]
+
+        token_usage = {
+            "prompt_tokens": len(request.prompt.split()),
+            "completion_tokens": len(answer.split()),
+            "total_tokens":
+                len(request.prompt.split())
+                + len(answer.split())
+        }
+
+        return provider_Response(
             provider=request.provider,
             model=request.model,
             prompt=request.prompt,
             answer=answer,
-            response_time_ms=120,
-            token_usage={
-                "input": 10,
-                "output": 5,
-                "total": 15
-            },
-            raw_response={}
+            response_time_ms=round(elapsed, 2),
+            token_usage=token_usage,
+            raw_response=data,
+            provider_confidence=confidence
         )

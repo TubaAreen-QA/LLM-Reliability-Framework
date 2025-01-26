@@ -1,0 +1,22 @@
+{
+    "What is the capital of France?": {
+        "answer": "Paris",
+        "provider_confidence": 0.99
+    },
+    "What is 2 + 2?": {
+        "answer": "4",
+        "provider_confidence": 1.0
+    },
+    "Who wrote Hamlet?": {
+        "answer": "William Shakespeare",
+        "provider_confidence": 0.98
+    },
+    "Translate 'Hello' to French": {
+        "answer": "Bonjour",
+        "provider_confidence": 0.97
+    },
+    "Summarize: Python is a programming language.": {
+        "answer": "Python is a programming language.",
+        "provider_confidence": 0.96
+    }
+}
