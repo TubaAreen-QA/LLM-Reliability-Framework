@@ -1,26 +1,46 @@
 from validators.Substring_Validator import SubstringValidator
+from framework.registry.validator_registry import (
+    ValidatorRegistry
+)
+from framework.models.provider_response import (
+    provider_Response
+)
 
 
-class ValidationEngine:
+validator = SubstringValidator()
 
-    def __init__(self):
 
-        self.substring = SubstringValidator()
+def response(answer):
 
-    def validate(self, response, expected):
+    return provider_Response(
+        provider="fake",
+        model="fake",
+        prompt="",
+        answer=answer,
+        response_time_ms=0,
+        token_usage={}
+    )
 
-        results = []
 
-        results.append(
+def test_substring_pass():
 
-            self.substring.validate(
+    result = validator.validate(
+        response("Paris"),
+        "Paris"
+    )
 
-                response.answer,
+    assert result.status == "PASS"
 
-                expected
-        
-            )
+    assert result.score == 100
 
-        )
 
-        return results
+def test_substring_fail():
+
+    result = validator.validate(
+        response("London"),
+        "Paris"
+    )
+
+    assert result.status == "FAIL"
+
+    assert result.score == 0
