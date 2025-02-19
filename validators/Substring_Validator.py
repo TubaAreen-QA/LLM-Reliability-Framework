@@ -1,29 +1,59 @@
+from __future__ import annotations
+
+import time
+
+from framework.constants.execution_status import ExecutionStatus
+from framework.contracts.provider_request import ProviderRequest
+from framework.contracts.provider_response import ProviderResponse
+from framework.contracts.validation_result import ValidationResult
+
 from validators.base_validator import BaseValidator
-from framework.models.provider_response import provider_Response
-from framework.models.validation_result import validation_Result
+
 
 class SubstringValidator(BaseValidator):
-        name = "substring"
 
-        def validate(
+    @property
+    def name(self) -> str:
+        return "substring"
+
+    @property
+    def threshold(self) -> float:
+        return 100.0
+
+    def validate(
         self,
-        response: provider_Response,
+        request: ProviderRequest,
+        response: ProviderResponse,
         expected
-    ) -> validation_Result:
+    ) -> ValidationResult:
+
+        start = time.perf_counter()
 
         actual = response.answer
 
-        passed = expected.lower() in actual.lower()
+        passed = (
+            expected.lower()
+            in actual.lower()
+        )
 
-        return validation_Result(
+        elapsed = (
+            time.perf_counter() - start
+        ) * 1000
+
+        return ValidationResult(
             validator=self.name,
-            status="PASS" if passed else "FAIL",
-            score=100 if passed else 0,
+            passed=passed,
+            score=100.0 if passed else 0.0,
+            threshold=self.threshold,
             actual=actual,
             expected=expected,
+            execution_time_ms=round(
+                elapsed,
+                3
+            ),
             message=(
-                "Substring matched."
+                ExecutionStatus.PASS.value
                 if passed
-                else "Substring not found."
+                else ExecutionStatus.FAIL.value
             )
         )
