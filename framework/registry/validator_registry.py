@@ -1,29 +1,49 @@
-from validators.Substring_Validator import SubstringValidator
+from __future__ import annotations
 
-
-from framework.factory.validator_factory import (
-    ValidatorFactory
-)
+from validators.base_validator import BaseValidator
 
 
 class ValidatorRegistry:
 
-    def __init__(self, validator_names):
+    def __init__(self) -> None:
 
-        self.validator_names = validator_names
+        self._validators: dict[
+            str,
+            type[BaseValidator]
+        ] = {}
 
-    def get_validators(self):
+    def register(
+        self,
+        validator: type[BaseValidator]
+    ) -> None:
 
-        validators = []
+        instance = validator()
 
-        for validator in self.validator_names:
+        self._validators[
+            instance.name
+        ] = validator
 
-            validators.append(
+    def exists(
+        self,
+        validator_name: str
+    ) -> bool:
 
-                ValidatorFactory.create(
-                    validator
-                )
+        return (
+            validator_name
+            in self._validators
+        )
 
-            )
+    def get(
+        self,
+        validator_name: str
+    ) -> type[BaseValidator]:
 
-        return validators
+        return self._validators[
+            validator_name
+        ]
+
+    def names(self) -> list[str]:
+
+        return sorted(
+            self._validators.keys()
+        )
