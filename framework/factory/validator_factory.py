@@ -1,24 +1,63 @@
-from validators.substring_validator import (
+from __future__ import annotations
+
+from framework.exceptions.validator_error import (
+    ValidatorError
+)
+
+from framework.registry.validator_registry import (
+    ValidatorRegistry
+)
+
+from validators.Substring_Validator import (
     SubstringValidator
 )
 
 
 class ValidatorFactory:
 
-    VALIDATORS = {
-        "substring": SubstringValidator
-    }
+    _registry = ValidatorRegistry()
+
+    _initialized = False
 
     @classmethod
-    def create(cls, validator_name):
+    def initialize(cls) -> None:
 
-        validator = cls.VALIDATORS.get(
-            validator_name
+        if cls._initialized:
+            return
+
+        cls._registry.register(
+            SubstringValidator
         )
 
-        if validator is None:
-            raise ValueError(
+        cls._initialized = True
+
+    @classmethod
+    def create(
+        cls,
+        validator_name: str
+    ):
+
+        cls.initialize()
+
+        if not cls._registry.exists(
+            validator_name
+        ):
+
+            raise ValidatorError(
                 f"Unknown validator: {validator_name}"
             )
 
+        validator = cls._registry.get(
+            validator_name
+        )
+
         return validator()
+
+    @classmethod
+    def available(
+        cls
+    ) -> list[str]:
+
+        cls.initialize()
+
+        return cls._registry.names()
