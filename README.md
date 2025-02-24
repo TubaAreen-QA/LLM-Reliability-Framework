@@ -1,20 +1,12 @@
-# EvalForge
-
 A modular LLM Evaluation Framework built using Python and Robot Framework.
-
----
 
 ## Vision
 
 Build a provider-agnostic framework capable of evaluating Large Language Models using configurable validators, weighted scoring, benchmarking and reporting.
 
----
-
 ## Current Status
 
-🚧 Under Development
-
----
+Under Development
 
 ## Features
 
@@ -26,8 +18,6 @@ Build a provider-agnostic framework capable of evaluating Large Language Models 
 - Benchmark Execution
 - JSON Reporting
 - HTML Reporting
-
----
 
 ## Architecture
 
@@ -46,8 +36,6 @@ Provider Validation Scoring
         ▼
 Reporter
 
----
-
 ## Repository Structure
 
 framework/
@@ -56,8 +44,6 @@ validators/
 reporters/
 robot/
 tests/
-
----
 
 ## License
 
