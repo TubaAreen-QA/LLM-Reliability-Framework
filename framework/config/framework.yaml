@@ -1,0 +1,37 @@
+framework:
+
+  name: EvalForge
+
+  version: 1.0.0
+
+provider:
+
+  name: fake
+
+  model: fake-gpt
+
+execution:
+
+  continue_on_failure: true
+
+  fail_fast: false
+
+  parallel_validators: false
+
+validators:
+
+  - substring
+
+scoring:
+
+  strategy: weighted_average
+
+reporting:
+
+  reporters:
+
+    - json
+
+benchmark:
+
+  enabled: false
