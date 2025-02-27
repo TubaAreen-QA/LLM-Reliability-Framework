@@ -1,0 +1,44 @@
+[33mb635a2a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m  implement ConfigLoader
+[33ma658800[m framework yaml
+[33mc6c378c[m .
+[33m842a3fa[m implement Validator factory
+[33m7449bde[m implement Validatorregistry
+[33m103089a[m implement SubstringValidator
+[33m9f64bbe[m add basevalidator contract
+[33mb4665be[m  add Provider factory
+[33mef03786[m  add ProviderRegistry
+[33mceb305c[m implement FakeProvide
+[33m316aebd[m add BaseProvider contract
+[33m932939d[m  export framework constants
+[33m14569c4[m add reporter constants
+[33m1c39ae1[m add validator constants
+[33mb4b9c87[m add execution provider constants
+[33m1c39cb6[m add execution status constants
+[33ma4908de[m export framework exceptions
+[33m6aa80f4[m add configuration error
+[33m20016c2[m add validator error
+[33m74f56b2[m add provider error
+[33mc1c58cd[m add EvaluationError
+[33mad581aa[m add benchmark contract
+[33mb5d0945[m add ComparisonResult contract
+[33med89eee[m add evaluation result contract
+[33m7a5f7e6[m add validation result contract
+[33m6cf64ac[m add ProviderResponse contract
+[33mb707e4d[m add ProviderRequest contract
+[33m76668a4[m implement evaluation and scoring engine
+[33m2ee706d[m implement validation engine and validator registry
+[33mc8d4db8[m implement fake provider
+[33m09a14ec[m add domain contracts for evaluation framework
+[33me7b20d2[m building overview
+[33me74fb2c[m implement provider factory and configuration-driven provider loading
+[33m0ce0c4e[m add configuration loader and validator factory
+[33mbf69ef2[m introduce validator registry and base validator abstraction
+[33m4008f3e[m integrate evaluation framework with Robot Framework library
+[33m444b0ad[m validation engine
+[33m6cee140[m implement evaluation, validation and scoring engines
+[33m9d35669[m feat: implement fake provider and substring validator
+[33m73b36a9[m feat: initialize evaluation framework architecture
+[33m53a4946[m implement provider request and response contracts
+[33m87139cd[m Design contract for evaluation, validation and evaluation
+[33m22b6506[m Design ProviderRequest Contract
+[33m20c39cd[m Initial commit
