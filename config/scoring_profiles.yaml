@@ -1,0 +1,79 @@
+profiles:
+
+  factual:
+
+    correctness:
+      weight: 70
+      threshold: 90
+
+    confidence:
+      weight: 15
+      threshold: 0.80
+
+    latency:
+      weight: 5
+      threshold: 2000
+
+    hallucination:
+      weight: 5
+      threshold: 0
+
+    toxicity:
+      weight: 5
+      threshold: 0
+
+  translation:
+
+    correctness:
+      weight: 60
+      threshold: 90
+
+    confidence:
+      weight: 25
+      threshold: 0.85
+
+    latency:
+      weight: 15
+      threshold: 2500
+
+  summarization:
+
+    correctness:
+      weight: 50
+
+    semantic:
+      weight: 25
+
+    confidence:
+      weight: 15
+
+    latency:
+      weight: 10
+
+  code_generation:
+
+    correctness:
+      weight: 70
+
+    syntax:
+      weight: 10
+
+    latency:
+      weight: 20
+
+  creative:
+
+    creativity:
+      weight: 45
+
+    grammar:
+      weight: 20
+
+    confidence:
+      weight: 10
+
+    toxicity:
+      weight: 10
+
+    latency:
+      weight: 15
