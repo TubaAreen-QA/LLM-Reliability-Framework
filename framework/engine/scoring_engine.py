@@ -1,21 +1,61 @@
-from framework.models.validation_result import validation_Result
+from __future__ import annotations
+
+from framework.contracts.validation_result import (
+    ValidationResult,
+)
+
+from framework.contracts.weighted_score_result import (
+    WeightedScoreResult,
+)
+
+from framework.scoring.profile_loader import (
+    ProfileLoader,
+)
+
+from framework.scoring.weighted_score import (
+    WeightedScore,
+)
+
 
 class ScoringEngine:
 
-    def calculate(
+    def __init__(
         self,
-        validation_results: list[validation_Result]
-    ) -> float:
+        profile_name: str,
+        profile_file: str,
+    ) -> None:
 
-        if not validation_results:
-            return 0.0
+        self._profile = (
 
-        total = sum(
-            result.score
-            for result in validation_results
+            ProfileLoader(
+
+                profile_file,
+
+            ).load(
+
+                profile_name,
+
+            )
+
         )
 
-        return round(
-            total / len(validation_results),
-            2
+        self._strategy = (
+
+            WeightedScore()
+
+        )
+
+    def calculate(
+        self,
+        validation_results: list[
+            ValidationResult
+        ],
+    ) -> WeightedScoreResult:
+
+        return self._strategy.calculate(
+
+            self._profile,
+
+            validation_results,
+
         )
