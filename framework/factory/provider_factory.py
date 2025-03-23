@@ -1,61 +1,62 @@
 from __future__ import annotations
 
+from framework.contracts.provider_config import (
+    ProviderConfig,
+)
+
 from framework.exceptions.provider_error import (
-    ProviderError
+    ProviderError,
 )
 
-from framework.registry.provider_registry import (
-    ProviderRegistry
+from providers.base_provider import (
+    BaseProvider,
 )
 
-from providers.fake_provider import FakeProvider
+from providers.fake_provider import (
+    FakeProvider,
+)
 
 
 class ProviderFactory:
 
-    _registry = ProviderRegistry()
-
-    _initialized = False
+    _providers: dict[
+        str,
+        type[BaseProvider],
+    ] = {}
 
     @classmethod
-    def initialize(cls) -> None:
+    def register(
+        cls,
+        provider: type[
+            BaseProvider
+        ],
+    ) -> None:
 
-        if cls._initialized:
-            return
+        instance = provider()
 
-        cls._registry.register(
-            FakeProvider
-        )
-
-        cls._initialized = True
+        cls._providers[
+            instance.name
+        ] = provider
 
     @classmethod
     def create(
         cls,
-        provider_name: str
-    ):
+        config: ProviderConfig,
+    ) -> BaseProvider:
 
-        cls.initialize()
-
-        if not cls._registry.exists(
-            provider_name
-        ):
-
-            raise ProviderError(
-                f"Unknown provider: {provider_name}"
-            )
-
-        provider = cls._registry.get(
-            provider_name
+        provider = cls._providers.get(
+            config.name
         )
 
-        return provider()
+        if provider is None:
 
-    @classmethod
-    def available(
-        cls
-    ) -> list[str]:
+            raise ProviderError(
+                f"Provider '{config.name}' is not registered."
+            )
 
-        cls.initialize()
+        return provider(config)
 
-        return cls._registry.names()
+
+ProviderFactory.register(
+    FakeProvider
+)
