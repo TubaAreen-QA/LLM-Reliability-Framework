@@ -1,12 +1,29 @@
-from abc import ABC, abstractmethod
-
-from framework.models.provider_request import provider_request
-from framework.models.provider_response import provider_Response
-
 from __future__ import annotations
+
+from abc import ABC
+from abc import abstractmethod
+
+from framework.contracts.provider_config import (
+    ProviderConfig,
+)
+
+from framework.contracts.provider_request import (
+    ProviderRequest,
+)
+
+from framework.contracts.provider_response import (
+    ProviderResponse,
+)
 
 
 class BaseProvider(ABC):
+
+    def __init__(
+        self,
+        config: ProviderConfig,
+    ) -> None:
+
+        self.config = config
 
     @property
     @abstractmethod
@@ -16,8 +33,8 @@ class BaseProvider(ABC):
     @abstractmethod
     def ask(
         self,
-        request: provider_request
-    ) -> provider_Response:
+        request: ProviderRequest,
+    ) -> ProviderResponse:
         ...
 
     @abstractmethod
@@ -25,5 +42,7 @@ class BaseProvider(ABC):
         ...
 
     @abstractmethod
-    def supported_models(self) -> list[str]:
+    def supported_models(
+        self,
+    ) -> list[str]:
         ...
