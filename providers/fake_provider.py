@@ -1,41 +1,86 @@
+from __future__ import annotations
+
 import json
 import time
 from pathlib import Path
 
-from providers.base_provider import BaseProvider
+from framework.contracts.provider_config import (
+    ProviderConfig,
+)
 
-from framework.models.provider_request import provider_request
-from framework.models.provider_response import provider_Response
-from __future__ import annotations
+from framework.contracts.provider_request import (
+    ProviderRequest,
+)
+
+from framework.contracts.provider_response import (
+    ProviderResponse,
+)
+
+from providers.base_provider import (
+    BaseProvider,
+)
+
 
 class FakeProvider(BaseProvider):
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        config: ProviderConfig,
+    ) -> None:
 
-        self._responses = self._load()
+        super().__init__(config)
+
+        file = (
+
+            Path(__file__).parent.parent
+
+            / "data"
+
+            / "fake_provider_responses.json"
+
+        )
+
+        with open(
+            file,
+            encoding="utf-8",
+        ) as fp:
+
+            self.responses = json.load(fp)
 
     @property
-    def name(self) -> str:
+    def name(
+        self,
+    ) -> str:
 
         return "fake"
 
     def ask(
         self,
-        request: provider_request
-    ) -> provider_Response:
+        request: ProviderRequest,
+    ) -> ProviderResponse:
 
         start = time.perf_counter()
 
-        response = self._responses.get(
+        response = self.responses.get(
+
             request.prompt,
+
             {
+
                 "answer": "Unknown",
-                "metadata": {}
-            }
+
+                "metadata": {},
+
+            },
+
         )
 
         elapsed = (
-            time.perf_counter() - start
+
+            time.perf_counter()
+
+            - start
+
         ) * 1000
 
         answer = response["answer"]
@@ -48,49 +93,56 @@ class FakeProvider(BaseProvider):
             answer.split()
         )
 
-        return provider_Response(
+        return ProviderResponse(
+
             provider=self.name,
-            model=request.model,
+
+            model=self.config.model,
+
             prompt=request.prompt,
+
             answer=answer,
-            response_time_ms=round(elapsed, 3),
+
+            response_time_ms=round(
+                elapsed,
+                3,
+            ),
+
             token_usage={
-                "prompt_tokens": prompt_tokens,
-                "completion_tokens": completion_tokens,
-                "total_tokens": (
-                    prompt_tokens +
-                    completion_tokens
-                )
+
+                "prompt_tokens":
+                    prompt_tokens,
+
+                "completion_tokens":
+                    completion_tokens,
+
+                "total_tokens":
+                    prompt_tokens
+                    + completion_tokens,
+
             },
+
             raw_response=response,
+
             metadata=response.get(
                 "metadata",
-                {}
-            )
+                {},
+            ),
+
         )
 
-    def health_check(self) -> bool:
+    def health_check(
+        self,
+    ) -> bool:
 
         return True
 
-    def supported_models(self) -> list[str]:
+    def supported_models(
+        self,
+    ) -> list[str]:
 
         return [
-            "fake-gpt"
+
+            self.config.model,
+
         ]
-
-    @staticmethod
-    def _load() -> dict:
-
-        file = (
-            Path(__file__).parent.parent
-            / "data"
-            / "fake_provider_responses.json"
-        )
-
-        with open(
-            file,
-            encoding="utf-8"
-        ) as fp:
-
-            return json.load(fp)
