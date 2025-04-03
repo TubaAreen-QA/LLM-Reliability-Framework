@@ -2,12 +2,6 @@ from __future__ import annotations
 
 import time
 
-from openai import OpenAI
-
-from framework.contracts.provider_config import (
-    ProviderConfig,
-)
-
 from framework.contracts.provider_request import (
     ProviderRequest,
 )
@@ -16,15 +10,36 @@ from framework.contracts.provider_response import (
     ProviderResponse,
 )
 
+from framework.http.openai_transport import (
+    OpenAITransport,
+)
+
 from providers.base_provider import (
     BaseProvider,
 )
 
 
-class OpenAIProvider(BaseProvider):
+class OpenAIProvider(
+    BaseProvider
+):
+
+    def __init__(
+        self,
+        config,
+    ):
+
+        super().__init__(config)
+
+        self.transport = (
+
+            OpenAITransport(config)
+
+        )
 
     @property
-    def name(self) -> str:
+    def name(
+        self,
+    ):
 
         return "openai"
 
@@ -33,37 +48,43 @@ class OpenAIProvider(BaseProvider):
         request: ProviderRequest,
     ) -> ProviderResponse:
 
-        client = OpenAI(
-            api_key=self.config.api_key,
-        )
+        payload = {
+
+            "model": self.config.model,
+
+            "messages": [
+
+                {
+
+                    "role": "user",
+
+                    "content": request.prompt,
+
+                }
+
+            ],
+
+            "temperature":
+                self.config.temperature,
+
+            "max_tokens":
+                self.config.max_tokens,
+
+        }
 
         start = time.perf_counter()
 
-        completion = client.chat.completions.create(
-
-            model=self.config.model,
-
-            messages=[
-                {
-                    "role": "user",
-                    "content": request.prompt,
-                }
-            ],
-
-            temperature=self.config.temperature,
-
-            max_tokens=self.config.max_tokens,
+        raw = self.transport.execute(
+            payload
         )
 
         elapsed = (
-            time.perf_counter() - start
+
+            time.perf_counter()
+
+            - start
+
         ) * 1000
-
-        answer = completion.choices[
-            0
-        ].message.content
-
-        usage = completion.usage
 
         return ProviderResponse(
 
@@ -73,41 +94,32 @@ class OpenAIProvider(BaseProvider):
 
             prompt=request.prompt,
 
-            answer=answer,
+            answer=raw["choices"][0]["message"]["content"],
 
             response_time_ms=round(
                 elapsed,
                 3,
             ),
 
-            token_usage={
+            token_usage=raw["usage"],
 
-                "prompt_tokens":
-                    usage.prompt_tokens,
-
-                "completion_tokens":
-                    usage.completion_tokens,
-
-                "total_tokens":
-                    usage.total_tokens,
-
-            },
-
-            raw_response=completion.model_dump(),
+            raw_response=raw,
 
             metadata={},
         )
 
     def health_check(
         self,
-    ) -> bool:
+    ):
 
         return True
 
     def supported_models(
         self,
-    ) -> list[str]:
+    ):
 
         return [
+
             self.config.model
+
         ]
