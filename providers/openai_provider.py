@@ -17,10 +17,13 @@ from framework.http.openai_transport import (
 from providers.base_provider import (
     BaseProvider,
 )
+from providers.abstract_sdk_provider import (
+    AbstractSDKProvider,
+)
 
 
 class OpenAIProvider(
-    BaseProvider
+    AbstractSDKProvider
 ):
 
     def __init__(
@@ -43,14 +46,15 @@ class OpenAIProvider(
 
         return "openai"
 
-    def ask(
+    def build_payload(
         self,
-        request: ProviderRequest,
-    ) -> ProviderResponse:
+        request,
+    ):
 
-        payload = {
+        return {
 
-            "model": self.config.model,
+            "model":
+                self.config.model,
 
             "messages": [
 
@@ -58,7 +62,8 @@ class OpenAIProvider(
 
                     "role": "user",
 
-                    "content": request.prompt,
+                    "content":
+                        request.prompt,
 
                 }
 
@@ -72,41 +77,29 @@ class OpenAIProvider(
 
         }
 
-        start = time.perf_counter()
 
-        raw = self.transport.execute(
-            payload
-        )
 
-        elapsed = (
+    def extract_answer(
+        self,
+        response,
+    ):
 
-            time.perf_counter()
+        return response[
+            "choices"
+        ][0][
+            "message"
+        ][
+            "content"
+        ]
 
-            - start
+    def extract_usage(
+        self,
+        response,
+    ):
 
-        ) * 1000
-
-        return ProviderResponse(
-
-            provider=self.name,
-
-            model=self.config.model,
-
-            prompt=request.prompt,
-
-            answer=raw["choices"][0]["message"]["content"],
-
-            response_time_ms=round(
-                elapsed,
-                3,
-            ),
-
-            token_usage=raw["usage"],
-
-            raw_response=raw,
-
-            metadata={},
-        )
+        return response[
+            "usage"
+        ]
 
     def health_check(
         self,
