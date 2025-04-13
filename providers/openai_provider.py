@@ -1,29 +1,20 @@
 from __future__ import annotations
 
-import time
-
-from framework.contracts.provider_request import (
-    ProviderRequest,
-)
-
-from framework.contracts.provider_response import (
-    ProviderResponse,
-)
-
 from framework.http.openai_transport import (
     OpenAITransport,
 )
 
-from providers.base_provider import (
-    BaseProvider,
+from framework.parsers.openai_parser import (
+    OpenAIParser,
 )
+
 from providers.abstract_sdk_provider import (
     AbstractSDKProvider,
 )
 
 
 class OpenAIProvider(
-    AbstractSDKProvider
+    AbstractSDKProvider,
 ):
 
     def __init__(
@@ -31,18 +22,14 @@ class OpenAIProvider(
         config,
     ):
 
-        super().__init__(config)
-
-        self.transport = (
-
-            OpenAITransport(config)
-
+        super().__init__(
+            config=config,
+            transport=OpenAITransport(config),
+            parser=OpenAIParser(),
         )
 
     @property
-    def name(
-        self,
-    ):
+    def name(self):
 
         return "openai"
 
@@ -56,11 +43,11 @@ class OpenAIProvider(
             "model":
                 self.config.model,
 
-            "messages": [
+            "messages":[
 
                 {
 
-                    "role": "user",
+                    "role":"user",
 
                     "content":
                         request.prompt,
@@ -77,39 +64,11 @@ class OpenAIProvider(
 
         }
 
-
-
-    def extract_answer(
-        self,
-        response,
-    ):
-
-        return response[
-            "choices"
-        ][0][
-            "message"
-        ][
-            "content"
-        ]
-
-    def extract_usage(
-        self,
-        response,
-    ):
-
-        return response[
-            "usage"
-        ]
-
-    def health_check(
-        self,
-    ):
+    def health_check(self):
 
         return True
 
-    def supported_models(
-        self,
-    ):
+    def supported_models(self):
 
         return [
 
