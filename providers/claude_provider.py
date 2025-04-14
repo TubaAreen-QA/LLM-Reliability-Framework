@@ -4,6 +4,10 @@ from framework.http.claude_transport import (
     ClaudeTransport,
 )
 
+from framework.parsers.claude_parser import (
+    ClaudeParser,
+)
+
 from providers.abstract_sdk_provider import (
     AbstractSDKProvider,
 )
@@ -18,12 +22,10 @@ class ClaudeProvider(
         config,
     ):
 
-        super().__init__(config)
-
-        self.transport = (
-            ClaudeTransport(
-                config
-            )
+        super().__init__(
+            config=config,
+            transport=ClaudeTransport(config),
+            parser=ClaudeParser(),
         )
 
     @property
@@ -59,67 +61,11 @@ class ClaudeProvider(
 
         }
 
-    def extract_answer(
-        self,
-        response,
-    ):
-
-        return response[
-            "content"
-        ][0][
-            "text"
-        ]
-
-    def extract_usage(
-        self,
-        response,
-    ):
-
-        return {
-
-            "prompt_tokens":
-
-                response[
-                    "usage"
-                ][
-                    "input_tokens"
-                ],
-
-            "completion_tokens":
-
-                response[
-                    "usage"
-                ][
-                    "output_tokens"
-                ],
-
-            "total_tokens":
-
-                response[
-                    "usage"
-                ][
-                    "input_tokens"
-                ]
-
-                +
-
-                response[
-                    "usage"
-                ][
-                    "output_tokens"
-                ]
-
-        }
-
-    def health_check(
-        self,
-    ):
+    def health_check(self):
 
         return True
 
-    def supported_models(
-        self,
-    ):
+    def supported_models(self):
 
         return [
 
