@@ -1,52 +1,67 @@
 from __future__ import annotations
 
-from framework.adapters.base_adapter import (
-    BaseAdapter,
+from framework.contracts.provider_request import (
+    ProviderRequest,
 )
 
-from framework.contracts.normalized_response import (
-    NormalizedResponse,
+from framework.contracts.provider_response import (
+    ProviderResponse,
+)
+
+from framework.adapters.base_adapter import (
+    BaseAdapter,
 )
 
 
 class OpenAIAdapter(BaseAdapter):
 
-    def normalize(
+    def adapt(
         self,
-        raw_response: dict,
-    ) -> NormalizedResponse:
+        request,
+        raw,
+        provider,
+        model,
+        latency_ms,
+    ) -> ProviderResponse:
 
-        usage = raw_response["usage"]
+        usage = raw["usage"]
 
-        return NormalizedResponse(
+        return ProviderResponse(
 
-            answer=raw_response[
-                "choices"
-            ][0][
-                "message"
-            ][
-                "content"
-            ],
+            provider=provider,
 
-            prompt_tokens=usage[
-                "prompt_tokens"
-            ],
+            model=model,
 
-            completion_tokens=usage[
-                "completion_tokens"
-            ],
+            prompt=request.prompt,
 
-            total_tokens=usage[
-                "total_tokens"
-            ],
+            answer=raw["choices"][0]["message"]["content"],
 
-            finish_reason=raw_response[
-                "choices"
-            ][0][
-                "finish_reason"
-            ],
-
-            model=raw_response.get(
-                "model"
+            response_time_ms=round(
+                latency_ms,
+                3,
             ),
+
+            token_usage={
+
+                "prompt_tokens":
+                    usage["prompt_tokens"],
+
+                "completion_tokens":
+                    usage["completion_tokens"],
+
+                "total_tokens":
+                    usage["total_tokens"],
+
+            },
+
+            raw_response=raw,
+
+            metadata={
+
+                "finish_reason":
+
+                    raw["choices"][0]["finish_reason"]
+
+            },
+
         )
