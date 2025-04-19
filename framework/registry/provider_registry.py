@@ -1,44 +1,99 @@
 from __future__ import annotations
 
-from providers.base_provider import BaseProvider
+from typing import Type
+
+from framework.contracts.provider_config import (
+    ProviderConfig,
+)
+
+from framework.exceptions.provider_error import (
+    ProviderError,
+)
+
+from providers.base_provider import (
+    BaseProvider,
+)
 
 
 class ProviderRegistry:
+    """
+    Central registry for all provider plugins.
+
+    Providers register themselves during framework startup.
+
+    The Evaluation Engine never imports providers directly.
+    """
 
     def __init__(self) -> None:
 
         self._providers: dict[
             str,
-            type[BaseProvider]
+            Type[BaseProvider],
         ] = {}
 
     def register(
         self,
-        provider: type[BaseProvider]
+        provider: Type[BaseProvider],
     ) -> None:
 
-        instance = provider()
+        provider_name = provider.PROVIDER_NAME
+
+        if provider_name in self._providers:
+
+            raise ProviderError(
+                f"Provider '{provider_name}' is already registered."
+            )
 
         self._providers[
-            instance.name
+            provider_name
         ] = provider
+
+    def unregister(
+        self,
+        provider_name: str,
+    ) -> None:
+
+        self._providers.pop(
+            provider_name,
+            None,
+        )
 
     def exists(
         self,
-        name: str
+        provider_name: str,
     ) -> bool:
 
-        return name in self._providers
+        return (
+            provider_name
+            in self._providers
+        )
 
-    def get(
+    def create(
         self,
-        name: str
-    ) -> type[BaseProvider]:
+        config: ProviderConfig,
+    ) -> BaseProvider:
 
-        return self._providers[name]
+        provider = self._providers.get(
+            config.name
+        )
 
-    def names(self) -> list[str]:
+        if provider is None:
+
+            raise ProviderError(
+
+                f"Provider '{config.name}' "
+                f"is not registered."
+
+            )
+
+        return provider(config)
+
+    def list(self) -> list[str]:
 
         return sorted(
             self._providers.keys()
         )
+
+    def clear(self) -> None:
+
+        self._providers.clear()
