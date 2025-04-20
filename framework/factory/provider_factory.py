@@ -4,59 +4,53 @@ from framework.contracts.provider_config import (
     ProviderConfig,
 )
 
-from framework.exceptions.provider_error import (
-    ProviderError,
-)
-
-from providers.base_provider import (
-    BaseProvider,
-)
-
-from providers.fake_provider import (
-    FakeProvider,
+from framework.registry.provider_registry import (
+    ProviderRegistry,
 )
 
 
 class ProviderFactory:
+    """
+    Facade responsible for creating provider instances.
 
-    _providers: dict[
-        str,
-        type[BaseProvider],
-    ] = {}
+    Provider registration is delegated to ProviderRegistry.
+    """
+
+    _registry = ProviderRegistry()
 
     @classmethod
     def register(
         cls,
-        provider: type[
-            BaseProvider
-        ],
+        provider,
     ) -> None:
 
-        instance = provider()
+        cls._registry.register(
+            provider
+        )
 
-        cls._providers[
-            instance.name
-        ] = provider
+    @classmethod
+    def unregister(
+        cls,
+        provider_name: str,
+    ) -> None:
+
+        cls._registry.unregister(
+            provider_name
+        )
 
     @classmethod
     def create(
         cls,
         config: ProviderConfig,
-    ) -> BaseProvider:
+    ):
 
-        provider = cls._providers.get(
-            config.name
+        return cls._registry.create(
+            config
         )
 
-        if provider is None:
+    @classmethod
+    def available(
+        cls,
+    ) -> list[str]:
 
-            raise ProviderError(
-                f"Provider '{config.name}' is not registered."
-            )
-
-        return provider(config)
-
-
-ProviderFactory.register(
-    FakeProvider
-)
+        return cls._registry.list()
