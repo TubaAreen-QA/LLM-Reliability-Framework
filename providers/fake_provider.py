@@ -21,7 +21,11 @@ from providers.base_provider import (
 )
 
 
+    
+
 class FakeProvider(BaseProvider):
+
+    PROVIDER_NAME = "fake"
 
     def __init__(
         self,

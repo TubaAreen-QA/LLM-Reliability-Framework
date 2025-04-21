@@ -13,9 +13,13 @@ from providers.abstract_sdk_provider import (
 )
 
 
+   
+
+
 class ClaudeProvider(
     AbstractSDKProvider,
 ):
+    PROVIDER_NAME = "claude"
 
     def __init__(
         self,

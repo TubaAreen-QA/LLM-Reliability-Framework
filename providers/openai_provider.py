@@ -13,9 +13,14 @@ from providers.abstract_sdk_provider import (
 )
 
 
+
+
+
+
 class OpenAIProvider(
     AbstractSDKProvider,
 ):
+    PROVIDER_NAME = "openai"
 
     def __init__(
         self,
