@@ -14,9 +14,6 @@ from providers.abstract_sdk_provider import (
 
 
 
-
-
-
 class OpenAIProvider(
     AbstractSDKProvider,
 ):
@@ -33,10 +30,6 @@ class OpenAIProvider(
             parser=OpenAIParser(),
         )
 
-    @property
-    def name(self):
-
-        return "openai"
 
     def build_payload(
         self,

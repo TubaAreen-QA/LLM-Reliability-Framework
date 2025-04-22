@@ -1,42 +1,58 @@
 from __future__ import annotations
 
 import time
-from abc import ABC
 from abc import abstractmethod
 
-from framework.contracts.provider_request import ProviderRequest
-from framework.contracts.provider_response import ProviderResponse
+from framework.adapters.base_adapter import BaseAdapter
+
+from framework.contracts.provider_request import (
+    ProviderRequest,
+)
+
+from framework.contracts.provider_response import (
+    ProviderResponse,
+)
 
 from framework.http.provider_transport import (
     ProviderTransport,
 )
 
-from framework.parsers.base_parser import (
-    BaseParser,
-)
-
 from providers.base_provider import BaseProvider
 
-  
 
+class AbstractSDKProvider(BaseProvider):
+    """
+    Template implementation for SDK based providers.
 
-class AbstractSDKProvider(
-    BaseProvider,
-    ABC,
-):
+    Workflow
+
+        build_payload()
+
+              ↓
+
+        transport.execute()
+
+              ↓
+
+        adapter.adapt()
+
+              ↓
+
+        ProviderResponse
+    """
 
     def __init__(
         self,
         config,
         transport: ProviderTransport,
-        parser: BaseParser,
+        adapter: BaseAdapter,
     ):
 
         super().__init__(config)
 
         self.transport = transport
 
-        self.parser = parser
+        self.adapter = adapter
 
     @abstractmethod
     def build_payload(
@@ -56,19 +72,28 @@ class AbstractSDKProvider(
 
         start = time.perf_counter()
 
-        raw = self.transport.execute(
+        raw_response = self.transport.execute(
             payload
         )
 
-        elapsed = (
+        latency = (
+
             time.perf_counter()
+
             - start
+
         ) * 1000
 
-        return self.parser.parse(
+        return self.adapter.adapt(
+
             request=request,
-            raw_response=raw,
+
+            raw_response=raw_response,
+
             provider=self.name,
+
             model=self.config.model,
-            latency_ms=elapsed,
+
+            latency_ms=latency,
+
         )

@@ -1,39 +1,32 @@
 from __future__ import annotations
 
-
 from abc import ABC
 from abc import abstractmethod
 
-from framework.contracts.provider_config import (
-    ProviderConfig,
-)
-
-from framework.contracts.provider_request import (
-    ProviderRequest,
-)
-
-from framework.contracts.provider_response import (
-    ProviderResponse,
-)
-
+from framework.contracts.provider_config import ProviderConfig
+from framework.contracts.provider_request import ProviderRequest
+from framework.contracts.provider_response import ProviderResponse
 
 
 class BaseProvider(ABC):
+    """
+    Base class for every LLM provider.
+
+    Every provider must expose a unique PROVIDER_NAME
+    so it can be registered without creating an instance.
+    """
 
     PROVIDER_NAME = ""
 
     def __init__(
         self,
         config: ProviderConfig,
-    ):
+    ) -> None:
 
         self.config = config
 
     @property
-    def name(
-        self,
-    ) -> str:
-
+    def name(self) -> str:
         return self.PROVIDER_NAME
 
     @abstractmethod
@@ -44,9 +37,7 @@ class BaseProvider(ABC):
         ...
 
     @abstractmethod
-    def health_check(
-        self,
-    ) -> bool:
+    def health_check(self) -> bool:
         ...
 
     @abstractmethod

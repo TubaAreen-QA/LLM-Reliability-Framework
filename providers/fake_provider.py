@@ -23,7 +23,7 @@ from providers.base_provider import (
 
     
 
-class FakeProvider(BaseProvider):
+class FakeProvider(AbstractSDKProvider):
 
     PROVIDER_NAME = "fake"
 
@@ -51,12 +51,7 @@ class FakeProvider(BaseProvider):
 
             self.responses = json.load(fp)
 
-    @property
-    def name(
-        self,
-    ) -> str:
 
-        return "fake"
 
     def ask(
         self,

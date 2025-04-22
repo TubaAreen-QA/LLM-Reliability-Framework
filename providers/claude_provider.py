@@ -32,10 +32,7 @@ class ClaudeProvider(
             parser=ClaudeParser(),
         )
 
-    @property
-    def name(self):
-
-        return "claude"
+  
 
     def build_payload(
         self,
