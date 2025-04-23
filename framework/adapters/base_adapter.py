@@ -13,6 +13,10 @@ from framework.contracts.provider_response import (
 
 
 class BaseAdapter(ABC):
+    """
+    Converts a vendor specific response
+    into the framework ProviderResponse.
+    """
 
     @abstractmethod
     def adapt(
