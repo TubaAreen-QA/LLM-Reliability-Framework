@@ -13,7 +13,7 @@ from framework.contracts.provider_response import (
 )
 
 
-class OpenAIAdapter(BaseAdapter):
+class ClaudeAdapter(BaseAdapter):
 
     def adapt(
         self,
@@ -29,9 +29,29 @@ class OpenAIAdapter(BaseAdapter):
             {},
         )
 
-        choice = raw_response[
-            "choices"
-        ][0]
+        answer = ""
+
+        content = raw_response.get(
+            "content",
+            [],
+        )
+
+        if content:
+
+            answer = content[0].get(
+                "text",
+                "",
+            )
+
+        prompt_tokens = usage.get(
+            "input_tokens",
+            0,
+        )
+
+        completion_tokens = usage.get(
+            "output_tokens",
+            0,
+        )
 
         return ProviderResponse(
 
@@ -41,11 +61,7 @@ class OpenAIAdapter(BaseAdapter):
 
             prompt=request.prompt,
 
-            answer=choice[
-                "message"
-            ][
-                "content"
-            ],
+            answer=answer,
 
             response_time_ms=round(
                 latency_ms,
@@ -55,25 +71,18 @@ class OpenAIAdapter(BaseAdapter):
             token_usage={
 
                 "prompt_tokens":
-
-                    usage.get(
-                        "prompt_tokens",
-                        0,
-                    ),
+                    prompt_tokens,
 
                 "completion_tokens":
-
-                    usage.get(
-                        "completion_tokens",
-                        0,
-                    ),
+                    completion_tokens,
 
                 "total_tokens":
 
-                    usage.get(
-                        "total_tokens",
-                        0,
-                    ),
+                    prompt_tokens
+
+                    +
+
+                    completion_tokens,
 
             },
 
@@ -81,10 +90,10 @@ class OpenAIAdapter(BaseAdapter):
 
             metadata={
 
-                "finish_reason":
+                "stop_reason":
 
-                    choice.get(
-                        "finish_reason"
+                    raw_response.get(
+                        "stop_reason"
                     ),
 
             },
