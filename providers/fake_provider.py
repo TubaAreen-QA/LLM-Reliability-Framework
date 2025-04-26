@@ -1,27 +1,128 @@
 from __future__ import annotations
 
 import json
-import time
 from pathlib import Path
 
-from framework.contracts.provider_config import (
-    ProviderConfig,
-)
-
-from framework.contracts.provider_request import (
-    ProviderRequest,
-)
-
-from framework.contracts.provider_response import (
-    ProviderResponse,
-)
-
-from providers.base_provider import (
-    BaseProvider,
-)
+from framework.adapters.base_adapter import BaseAdapter
+from framework.contracts.provider_config import ProviderConfig
+from framework.contracts.provider_request import ProviderRequest
+from framework.contracts.provider_response import ProviderResponse
+from framework.http.provider_transport import ProviderTransport
+from providers.abstract_sdk_provider import AbstractSDKProvider
 
 
-    
+class FakeTransport(ProviderTransport):
+    """
+    Transport used by the FakeProvider.
+
+    Reads responses from a JSON file instead of calling
+    an external API.
+    """
+
+    def __init__(
+        self,
+        data_file: str | Path,
+    ) -> None:
+
+        with open(
+            data_file,
+            encoding="utf-8",
+        ) as fp:
+
+            self._responses = json.load(fp)
+
+    def execute(
+        self,
+        payload: dict,
+    ) -> dict:
+
+        prompt = payload["prompt"]
+
+        return self._responses.get(
+            prompt,
+            {
+                "answer": "Unknown prompt",
+                "confidence": 0.0,
+                "usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0,
+                },
+            },
+        )
+
+
+class FakeAdapter(BaseAdapter):
+
+    def adapt(
+        self,
+        request: ProviderRequest,
+        raw_response: dict,
+        provider: str,
+        model: str,
+        latency_ms: float,
+    ) -> ProviderResponse:
+
+        usage = raw_response.get(
+            "usage",
+            {},
+        )
+
+        return ProviderResponse(
+
+            provider=provider,
+
+            model=model,
+
+            prompt=request.prompt,
+
+            answer=raw_response.get(
+                "answer",
+                "",
+            ),
+
+            response_time_ms=round(
+                latency_ms,
+                3,
+            ),
+
+            token_usage={
+
+                "prompt_tokens":
+                    usage.get(
+                        "prompt_tokens",
+                        0,
+                    ),
+
+                "completion_tokens":
+                    usage.get(
+                        "completion_tokens",
+                        0,
+                    ),
+
+                "total_tokens":
+                    usage.get(
+                        "total_tokens",
+                        0,
+                    ),
+
+            },
+
+            raw_response=raw_response,
+
+            metadata={
+
+                "confidence":
+
+                    raw_response.get(
+                        "confidence",
+                        0.0,
+                    )
+
+            },
+
+        )
+
 
 class FakeProvider(AbstractSDKProvider):
 
@@ -32,9 +133,7 @@ class FakeProvider(AbstractSDKProvider):
         config: ProviderConfig,
     ) -> None:
 
-        super().__init__(config)
-
-        file = (
+        data_file = (
 
             Path(__file__).parent.parent
 
@@ -44,91 +143,28 @@ class FakeProvider(AbstractSDKProvider):
 
         )
 
-        with open(
-            file,
-            encoding="utf-8",
-        ) as fp:
+        super().__init__(
 
-            self.responses = json.load(fp)
+            config=config,
 
+            transport=FakeTransport(
+                data_file
+            ),
 
+            adapter=FakeAdapter(),
 
-    def ask(
+        )
+
+    def build_payload(
         self,
         request: ProviderRequest,
-    ) -> ProviderResponse:
+    ) -> dict:
 
-        start = time.perf_counter()
+        return {
 
-        response = self.responses.get(
+            "prompt": request.prompt
 
-            request.prompt,
-
-            {
-
-                "answer": "Unknown",
-
-                "metadata": {},
-
-            },
-
-        )
-
-        elapsed = (
-
-            time.perf_counter()
-
-            - start
-
-        ) * 1000
-
-        answer = response["answer"]
-
-        prompt_tokens = len(
-            request.prompt.split()
-        )
-
-        completion_tokens = len(
-            answer.split()
-        )
-
-        return ProviderResponse(
-
-            provider=self.name,
-
-            model=self.config.model,
-
-            prompt=request.prompt,
-
-            answer=answer,
-
-            response_time_ms=round(
-                elapsed,
-                3,
-            ),
-
-            token_usage={
-
-                "prompt_tokens":
-                    prompt_tokens,
-
-                "completion_tokens":
-                    completion_tokens,
-
-                "total_tokens":
-                    prompt_tokens
-                    + completion_tokens,
-
-            },
-
-            raw_response=response,
-
-            metadata=response.get(
-                "metadata",
-                {},
-            ),
-
-        )
+        }
 
     def health_check(
         self,
@@ -142,6 +178,6 @@ class FakeProvider(AbstractSDKProvider):
 
         return [
 
-            self.config.model,
+            self.config.model
 
         ]
