@@ -30,7 +30,9 @@ from framework.services.provider_service import (
     ProviderService,
 )
 
-
+from framework.bootstrap.provider_bootstrap import (
+    ProviderBootstrap,
+)
 class EvaluationEngine:
 
     def __init__(
@@ -41,6 +43,8 @@ class EvaluationEngine:
         profile_name: str,
         profile_file: str,
     ) -> None:
+        
+        ProviderBootstrap.initialize()
 
         config = ProviderLoader(
             provider_file
