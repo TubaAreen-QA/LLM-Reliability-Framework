@@ -25,6 +25,10 @@ class BenchmarkResult:
 
     average_latency_ms: float
 
-    evaluations: list[EvaluationResult]
+    # evaluations: list[EvaluationResult]
 
     metadata: dict = field(default_factory=dict)
+
+    sample_id: str
+
+    evaluation: EvaluationResult
