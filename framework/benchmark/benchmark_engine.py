@@ -6,35 +6,66 @@ from framework.contracts.benchmark_result import (
     BenchmarkResult,
 )
 
+from framework.contracts.benchmark_summary import (
+    BenchmarkSummary,
+)
+
 
 class BenchmarkEngine:
 
     """
-    Aggregates benchmark execution results.
+    Produces aggregate benchmark statistics.
     """
 
     def summarize(
         self,
-        results: list[
-            BenchmarkResult
-        ],
-    ):
+        provider: str,
+        model: str,
+        profile: str,
+        results: list[BenchmarkResult],
+    ) -> BenchmarkSummary:
 
-        overall_scores = [
+        if not results:
 
-            result.evaluation.overall_score
+            return BenchmarkSummary(
 
-            for result
+                provider=provider,
+
+                model=model,
+
+                profile=profile,
+
+                sample_count=0,
+
+                passed=0,
+
+                failed=0,
+
+                pass_rate=0,
+
+                average_score=0,
+
+                average_latency_ms=0,
+
+                metadata={},
+
+            )
+
+        scores = [
+
+            r.evaluation.overall_score
+
+            for r
 
             in results
 
         ]
 
-        execution_times = [
+        latencies = [
 
-            result.evaluation.execution_time_ms
+            r.evaluation.execution_time_ms
 
-            for result
+            for r
 
             in results
 
@@ -42,50 +73,58 @@ class BenchmarkEngine:
 
         passed = sum(
 
-            result.evaluation.overall_passed
+            r.evaluation.overall_passed
 
-            for result
+            for r
 
             in results
 
         )
 
-        return {
+        failed = len(results) - passed
 
-            "samples": len(results),
+        return BenchmarkSummary(
 
-            "passed": passed,
+            provider=provider,
 
-            "failed": len(results) - passed,
+            model=model,
 
-            "average_score": round(
+            profile=profile,
 
-                mean(overall_scores),
+            sample_count=len(results),
+
+            passed=passed,
+
+            failed=failed,
+
+            pass_rate=round(
+
+                passed
+
+                * 100
+
+                / len(results),
 
                 2,
 
             ),
 
-            "average_latency_ms": round(
+            average_score=round(
 
-                mean(execution_times),
+                mean(scores),
 
                 2,
 
             ),
 
-            "pass_rate": round(
+            average_latency_ms=round(
 
-                (passed / len(results))
-
-                * 100,
+                mean(latencies),
 
                 2,
 
-            )
+            ),
 
-            if results
+            metadata={},
 
-            else 0,
-
-        }
+        )
