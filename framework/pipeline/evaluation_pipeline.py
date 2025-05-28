@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+from framework.contracts.execution_context import (
+    ExecutionContext,
+)
+
 from framework.pipeline.pipeline_step import (
     PipelineStep,
 )
 
 
 class EvaluationPipeline:
-    """
-    Executes pipeline steps sequentially.
-    """
 
     def __init__(self):
 
@@ -19,21 +20,21 @@ class EvaluationPipeline:
     def add_step(
         self,
         step: PipelineStep,
-    ) -> None:
+    ):
 
-        self._steps.append(step)
+        self._steps.append(
+            step
+        )
 
     def execute(
         self,
-        context: dict,
-    ) -> dict:
-
-        current = context
+        context: ExecutionContext,
+    ) -> ExecutionContext:
 
         for step in self._steps:
 
-            current = step.execute(
-                current
+            context = step.execute(
+                context
             )
 
-        return current
+        return context
