@@ -1,0 +1,11 @@
+pipeline:
+
+  - prompt_render
+
+  - provider_execution
+
+  - validation
+
+  - scoring
+
+  - reporting
