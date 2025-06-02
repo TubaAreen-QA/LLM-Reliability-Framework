@@ -32,6 +32,23 @@ from framework.services.provider_service import (
 
 from framework.bootstrap.provider_bootstrap import (
     ProviderBootstrap,
+
+
+from framework.config.pipeline_loader import (
+    PipelineLoader,
+)
+
+from framework.pipeline.pipeline_factory import (
+    PipelineFactory,
+)
+
+from framework.contracts.execution_context import (
+    ExecutionContext,
+)
+
+
+
+
 )
 class EvaluationEngine:
 
@@ -43,6 +60,9 @@ class EvaluationEngine:
         profile_name: str,
         profile_file: str,
     ) -> None:
+        
+        pipeline_steps = PipelineLoader("config/pipeline.yaml",).load()
+        self.pipeline = PipelineFactory.create(pipeline_steps,)
         
         ProviderBootstrap.initialize()
 
@@ -79,7 +99,14 @@ class EvaluationEngine:
         self,
         request: ProviderRequest,
         expected,
+        context = ExecutionContext(request=request,provider=self._provider.name,model=self._provider.config.model,profile=self._scoring_engine.profile_name,)
+        context.metadata["provider_config"] = self._provider.config
+
+        context = self.pipeline.execute(context,)
+        return context.evaluation
     ) -> EvaluationResult:
+        
+        
 
         start = time.perf_counter()
 
@@ -89,6 +116,8 @@ class EvaluationEngine:
                 request,
             )
         )
+        
+        
 
         validation_results = (
             self._validation_engine.execute(
@@ -121,4 +150,6 @@ class EvaluationEngine:
                 "profile": weighted_score.profile,
                 "weighted_score": weighted_score,
             },
+            
         )
+    
