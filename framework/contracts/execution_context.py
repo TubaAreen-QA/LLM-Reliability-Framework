@@ -15,6 +15,9 @@ from framework.contracts.evaluation_result import (
     EvaluationResult,
 )
 
+from framework.contracts.validation_result import ValidationResult
+from framework.contracts.weighted_score import WeightedScore
+
 
 @dataclass(slots=True)
 class ExecutionContext:
@@ -41,4 +44,12 @@ class ExecutionContext:
 
     metadata: dict[str, Any] = field(
         default_factory=dict,
+        
     )
+
+    
+    validation_results: list[ValidationResult] = field(
+    default_factory=list,
+    )
+
+    weighted_score: WeightedScore | None = None
