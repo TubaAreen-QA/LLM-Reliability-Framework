@@ -1,0 +1,27 @@
+name: Default Benchmark Suite
+
+datasets:
+
+  - datasets/factual.json
+
+  - datasets/summarization.json
+
+  - datasets/translation.json
+
+providers:
+
+  - openai
+
+  - claude
+
+  - gemini
+
+profiles:
+
+  - default
+
+metadata:
+
+  owner: EvalForge
+
+  version: "1.0"
