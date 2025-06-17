@@ -1,39 +1,48 @@
+from framework.contracts.validation_result import (
+    ValidationResult,
+)
+
 from framework.engine.scoring_engine import (
-    ScoringEngine
-)
-
-from framework.models.validation_result import (
-    ValidationResult
+    ScoringEngine,
 )
 
 
-engine = ScoringEngine()
+def test_scoring_engine_returns_weighted_score():
 
+    engine = ScoringEngine(
 
-def test_average_score():
+        "default",
+
+        "config/profiles.yaml",
+
+    )
 
     results = [
 
         ValidationResult(
-            validator="substring",
-            status="PASS",
-            score=100,
-            actual="Paris",
-            expected="Paris",
-            message=""
-        ),
 
-        ValidationResult(
-            validator="confidence",
+            validator="exact_match",
+
             status="PASS",
-            score=80,
-            actual=0.80,
-            expected=0.75,
-            message=""
+
+            score=100,
+
+            expected="Hello",
+
+            actual="Hello",
+
+            message="",
+
         )
 
     ]
 
-    score = engine.calculate(results)
+    score = engine.calculate(
 
-    assert score == 90
+        results,
+
+    )
+
+    assert score.score == 100
+
+    assert score.passed is True
