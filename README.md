@@ -1,49 +1,47 @@
 A modular LLM Evaluation Framework built using Python and Robot Framework.
 
-## Vision
+LLM RELIABILITY FRAMEWORK - LRF
 
-Build a provider-agnostic framework capable of evaluating Large Language Models using configurable validators, weighted scoring, benchmarking and reporting.
-
-## Current Status
-
-Under Development
+> A modular LLM Evaluation Framework for validating, benchmarking, and comparing Large Language Models.
 
 ## Features
 
-- Provider Abstraction
-- Validation Engine
-- Weighted Scoring
-- Robot Framework Integration
-- Model Comparison
-- Benchmark Execution
-- JSON Reporting
-- HTML Reporting
+- Provider abstraction
+- Validation engine
+- Weighted scoring
+- Configurable evaluation pipeline
+- Benchmark execution
+- Model comparison
+- JSON and HTML reporting
+- Robot Framework integration
+- GitHub Actions CI
 
-## Architecture
+## Installation
 
-Robot Framework
-        │
-        ▼
-Evaluation Library
-        │
-        ▼
-Evaluation Engine
-        │
- ┌──────┼──────────┐
- ▼      ▼          ▼
-Provider Validation Scoring
-        │
-        ▼
-Reporter
+```bash
+pip install -r requirements.txt
+```
 
-## Repository Structure
+## Run Tests
 
-framework/
-providers/
-validators/
-reporters/
-robot/
-tests/
+```bash
+pytest
+```
+
+## Run Evaluation
+
+```bash
+python cli/main.py \
+    --provider fake \
+    --prompt "Hello" \
+    --expected "Hello"
+```
+
+## Documentation
+
+- docs/getting_started.md
+- docs/api_reference.md
+- docs/architecture.md
 
 ## License
 
