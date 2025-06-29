@@ -1,37 +1,31 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.pyo
+*.pyd
+*.egg-info/
 
-# Virtual Environment
-venv/
+# Virtual environments
 .venv/
+venv/
 env/
 
 # IDE
 .vscode/
 .idea/
 
-# Robot Framework
-log.html
-report.html
-output.xml
-
-# Pytest
+# Test artifacts
 .pytest_cache/
-
-# Coverage
 .coverage
 htmlcov/
 
-# Build
-build/
-dist/
-*.egg-info/
+# Logs
+logs/
+*.log
 
-# OS
+# Reports
+reports/
+
+# OS files
 .DS_Store
 Thumbs.db
-
-# Environment
-.env
