@@ -7,19 +7,23 @@ from typing import Any
 @dataclass(slots=True, frozen=True)
 class ProviderRequest:
     """
-    Immutable request sent to an LLM provider.
+    Standard request sent to every provider.
     """
-
-    provider: str
-
-    model: str
 
     prompt: str
 
+    system_prompt: str | None = None
+
     temperature: float = 0.0
 
-    max_tokens: int = 512
+    max_tokens: int | None = None
 
-    timeout: int = 30
+    top_p: float = 1.0
 
-    metadata: dict[str, Any] = field(default_factory=dict)
+    stop_sequences: list[str] = field(
+        default_factory=list,
+    )
+
+    metadata: dict[str, Any] = field(
+        default_factory=dict,
+    )
