@@ -7,21 +7,25 @@ from typing import Any
 @dataclass(slots=True, frozen=True)
 class ProviderResponse:
     """
-    Immutable response returned by a provider.
+    Standard response returned by providers.
     """
 
-    provider: str
+    content: str
 
     model: str
 
-    prompt: str
+    provider: str
 
-    answer: str
+    finish_reason: str
 
-    response_time_ms: float
+    prompt_tokens: int = 0
 
-    token_usage: dict[str, int]
+    completion_tokens: int = 0
 
-    raw_response: dict[str, Any] = field(default_factory=dict)
+    total_tokens: int = 0
 
-    metadata: dict[str, Any] = field(default_factory=dict)
+    latency_ms: float = 0.0
+
+    metadata: dict[str, Any] = field(
+        default_factory=dict,
+    )
