@@ -7,27 +7,19 @@ from typing import Any
 @dataclass(slots=True, frozen=True)
 class ProviderConfig:
     """
-    Immutable provider configuration loaded from YAML.
+    Provider configuration loaded from YAML.
     """
 
     name: str
 
     model: str
 
-    api_key: str | None
+    api_key_env: str | None = None
 
-    base_url: str | None
+    base_url: str | None = None
 
-    timeout: int
+    timeout: int = 60
 
-    temperature: float
-
-    max_tokens: int
-
-    retries: int
-
-    enabled: bool = True
-
-    metadata: dict[str, Any] = field(
-        default_factory=dict
+    options: dict[str, Any] = field(
+        default_factory=dict,
     )
