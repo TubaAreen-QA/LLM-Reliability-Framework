@@ -1,29 +1,22 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 
 @dataclass(slots=True, frozen=True)
 class ValidationResult:
     """
-    Result returned by an individual validator.
+    Result produced by a validator.
     """
 
     validator: str
 
-    passed: bool
+    status: str
 
     score: float
 
-    threshold: float
+    expected: str
 
-    actual: Any
+    actual: str
 
-    expected: Any
-
-    execution_time_ms: float
-
-    message: str = ""
-
-    metadata: dict[str, Any] = field(default_factory=dict)
+    message: str
