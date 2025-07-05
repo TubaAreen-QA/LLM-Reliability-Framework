@@ -1,15 +1,21 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Any
 
-from framework.contracts.provider_response import ProviderResponse
-from framework.contracts.validation_result import ValidationResult
+from framework.contracts.provider_response import (
+    ProviderResponse,
+)
+
+from framework.contracts.validation_result import (
+    ValidationResult,
+)
 
 
 @dataclass(slots=True, frozen=True)
 class EvaluationResult:
     """
-    Final evaluation produced by the framework.
+    Final output produced by EvaluationEngine.
     """
 
     provider_response: ProviderResponse
@@ -22,4 +28,6 @@ class EvaluationResult:
 
     execution_time_ms: float
 
-    metadata: dict = field(default_factory=dict)
+    metadata: dict[str, Any] = field(
+        default_factory=dict,
+    )
