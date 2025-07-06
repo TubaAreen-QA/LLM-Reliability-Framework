@@ -1,20 +1,25 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 
 @dataclass(slots=True, frozen=True)
 class BenchmarkSample:
     """
-    Single benchmark sample.
+    Single benchmark example.
     """
 
-    prompt: str
-    expected: Any
-    category: str = ""
-    metadata: dict = None
     id: str
+
+    prompt: str
+
+    expected: Any
+
     validators: list[str]
+
     profile: str
-    tags: list[str]
+
+    metadata: dict[str, Any] = field(
+        default_factory=dict,
+    )
