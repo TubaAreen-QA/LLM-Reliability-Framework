@@ -1,33 +1,17 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
-from framework.contracts.evaluation_result import EvaluationResult
+from framework.contracts.evaluation_result import (
+    EvaluationResult,
+)
 
 
 @dataclass(slots=True, frozen=True)
 class BenchmarkResult:
     """
-    Aggregated benchmark execution result.
+    Result of evaluating one benchmark sample.
     """
-
-    provider: str
-
-    model: str
-
-    total_prompts: int
-
-    passed: int
-
-    failed: int
-
-    average_score: float
-
-    average_latency_ms: float
-
-    # evaluations: list[EvaluationResult]
-
-    metadata: dict = field(default_factory=dict)
 
     sample_id: str
 
