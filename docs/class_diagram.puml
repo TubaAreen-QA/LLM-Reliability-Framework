@@ -1,0 +1,28 @@
+ProviderRequest
+        │
+        ▼
+Provider
+
+        │
+        ▼
+ProviderResponse
+
+        │
+        ▼
+ValidationEngine
+
+        │
+        ▼
+ValidationResult
+
+        │
+        ▼
+ScoringEngine
+
+        │
+        ▼
+WeightedScore
+
+        │
+        ▼
+EvaluationResult
