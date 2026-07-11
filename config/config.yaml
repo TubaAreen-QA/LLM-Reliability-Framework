@@ -1,0 +1,15 @@
+provider:
+
+  name: fake
+
+  model: fake-gpt
+
+
+validators:
+
+  - substring
+
+
+reporter:
+
+  type: json
